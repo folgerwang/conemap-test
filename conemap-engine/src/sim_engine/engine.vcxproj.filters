@@ -1,0 +1,275 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\engine">
+      <UniqueIdentifier>{c2b925d2-1949-4862-9302-3f46a79c87c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine\renderer">
+      <UniqueIdentifier>{a5eaca32-148d-4c72-b7ad-b4f7cb0548b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine\renderer\vulkan">
+      <UniqueIdentifier>{b7cea539-b9ce-4c91-8c6d-0920ae84918f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine\game_object">
+      <UniqueIdentifier>{0265bd93-45cf-464c-a998-6a9705f6a097}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine\scene_rendering">
+      <UniqueIdentifier>{5f7bdafe-c947-4d5d-85bd-478e98efad6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\engine">
+      <UniqueIdentifier>{19393963-dc57-49d8-b4ec-34f66735c1d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\engine\renderer">
+      <UniqueIdentifier>{9bb77967-f6ef-40fc-a54f-381439f1582a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\engine\renderer\vulkan">
+      <UniqueIdentifier>{24a44006-ecdb-42ce-a617-c197377c8978}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\engine\game_object">
+      <UniqueIdentifier>{9e6dbc5b-18fd-4382-8a6e-832818f15725}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\engine\scene_rendering">
+      <UniqueIdentifier>{6cbcba5e-5ac6-4cd4-abc2-cc1e7212558f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="engine_helper.cpp">
+      <Filter>Source Files\engine</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer\renderer.cpp">
+      <Filter>Source Files\engine\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer\renderer_helper.cpp">
+      <Filter>Source Files\engine\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer\vulkan\vk_command_buffer.cpp">
+      <Filter>Source Files\engine\renderer\vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer\vulkan\vk_device.cpp">
+      <Filter>Source Files\engine\renderer\vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer\vulkan\vk_renderer_helper.cpp">
+      <Filter>Source Files\engine\renderer\vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="game_object\shape_base.cpp">
+      <Filter>Source Files\engine\game_object</Filter>
+    </ClCompile>
+    <ClCompile Include="game_object\camera.cpp">
+      <Filter>Source Files\engine\game_object</Filter>
+    </ClCompile>
+    <ClCompile Include="game_object\patch.cpp">
+      <Filter>Source Files\engine\game_object</Filter>
+    </ClCompile>
+    <ClCompile Include="scene_rendering\ibl_creator.cpp">
+      <Filter>Source Files\engine\scene_rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="game_object\plane.cpp">
+      <Filter>Source Files\engine\game_object</Filter>
+    </ClCompile>
+    <ClCompile Include="game_object\conemap_test.cpp">
+      <Filter>Source Files\engine\game_object</Filter>
+    </ClCompile>
+    <ClCompile Include="scene_rendering\conemap.cpp">
+      <Filter>Source Files\engine\scene_rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="scene_rendering\prt_shadow.cpp">
+      <Filter>Source Files\engine\scene_rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="game_object\conemap_obj.cpp">
+      <Filter>Source Files\engine\game_object</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="engine_helper.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="tiny_mtx2.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\command_buffer.h">
+      <Filter>Header Files\engine\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\device.h">
+      <Filter>Header Files\engine\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\physical_device.h">
+      <Filter>Header Files\engine\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\renderer.h">
+      <Filter>Header Files\engine\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\renderer_definition.h">
+      <Filter>Header Files\engine\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\renderer_helper.h">
+      <Filter>Header Files\engine\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\renderer_structs.h">
+      <Filter>Header Files\engine\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\vulkan\vk_command_buffer.h">
+      <Filter>Header Files\engine\renderer\vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\vulkan\vk_device.h">
+      <Filter>Header Files\engine\renderer\vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\vulkan\vk_physical_device.h">
+      <Filter>Header Files\engine\renderer\vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\vulkan\vk_renderer_helper.h">
+      <Filter>Header Files\engine\renderer\vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="game_object\shape_base.h">
+      <Filter>Header Files\engine\game_object</Filter>
+    </ClInclude>
+    <ClInclude Include="game_object\box.h">
+      <Filter>Header Files\engine\game_object</Filter>
+    </ClInclude>
+    <ClInclude Include="game_object\camera.h">
+      <Filter>Header Files\engine\game_object</Filter>
+    </ClInclude>
+    <ClInclude Include="game_object\patch.h">
+      <Filter>Header Files\engine\game_object</Filter>
+    </ClInclude>
+    <ClInclude Include="scene_rendering\ibl_creator.h">
+      <Filter>Header Files\engine\scene_rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders\brdf.glsl.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders\functions.glsl.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders\global_definition.glsl.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders\ibl.glsl.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders\inoise.glsl.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders\noise.glsl.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders\punctual.glsl.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders\sky_scattering_lut_common.glsl.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="game_object\plane.h">
+      <Filter>Header Files\engine\game_object</Filter>
+    </ClInclude>
+    <ClInclude Include="game_object\conemap_test.h">
+      <Filter>Header Files\engine\game_object</Filter>
+    </ClInclude>
+    <ClInclude Include="scene_rendering\conemap.h">
+      <Filter>Header Files\engine\scene_rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="scene_rendering\prt_shadow.h">
+      <Filter>Header Files\engine\scene_rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders\prt_core.glsl.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="game_object\conemap_obj.h">
+      <Filter>Header Files\engine\game_object</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders\pbr_lighting.glsl.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\blur_image_x.comp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\blur_image_y_merge.comp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\cube_ibl.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\full_screen.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\ibl_smooth.comp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\lungs.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\lungs.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\perlin_noise_init.comp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\shaders-compile.cfg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\sky_scattering_lut_final_pass.comp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\sky_scattering_lut_first_pass.comp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\sky_scattering_lut_sum_pass.comp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\update_camera.comp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\prt_shadow_gen.comp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\conemap_gen.comp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\conemap_test.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\conemap_test.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\prt_minmax_ds.comp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\gen_prt_pack_info.comp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\pack_prt.comp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\conemap_gen_init.comp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\gen_minmax_depth.comp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\prt_shadow_cache_init.comp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\prt_shadow_cache_update.comp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\prt_shadow_gen_with_cache.comp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\conemap_pack.comp">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+</Project>

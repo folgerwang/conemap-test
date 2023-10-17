@@ -1,0 +1,76 @@
+#version 450
+#extension GL_ARB_separate_shader_objects : enable
+#include "global_definition.glsl.h"
+
+layout(set = 0, binding = SRC_TEX_INDEX, rgba32f) uniform readonly image2D src_img;
+layout(set = 0, binding = DST_TEX_INDEX, rgba32f) uniform image2D dst_img;
+
+layout(local_size_x = 8, local_size_y = 16) in;
+
+const uint g_block_size =
+    gl_WorkGroupSize.x * gl_WorkGroupSize.y;
+
+shared vec4 s_shared_minmax[14][g_block_size];
+
+void main()
+{
+	// get index in global work group i.e x,y position
+    ivec2 pixel_coords_0 = ivec2(gl_GlobalInvocationID.x * 16, gl_GlobalInvocationID.y);
+    ivec2 pixel_coords_1 = ivec2(gl_GlobalInvocationID.x * 16 + 8, gl_GlobalInvocationID.y);
+    uint local_idx = gl_LocalInvocationIndex;
+
+    vec4 value4_0 = imageLoad(src_img, pixel_coords_0);
+    vec4 value4_1 = imageLoad(src_img, pixel_coords_1);
+    s_shared_minmax[0][local_idx] = min(value4_0, value4_1);
+    s_shared_minmax[1][local_idx] = max(value4_0, value4_1);
+    value4_0 = imageLoad(src_img, pixel_coords_0 + ivec2(1, 0));
+    value4_1 = imageLoad(src_img, pixel_coords_1 + ivec2(1, 0));
+    s_shared_minmax[2][local_idx] = min(value4_0, value4_1);
+    s_shared_minmax[3][local_idx] = max(value4_0, value4_1);
+    value4_0 = imageLoad(src_img, pixel_coords_0 + ivec2(2, 0));
+    value4_1 = imageLoad(src_img, pixel_coords_1 + ivec2(2, 0));
+    s_shared_minmax[4][local_idx] = min(value4_0, value4_1);
+    s_shared_minmax[5][local_idx] = max(value4_0, value4_1);
+    value4_0 = imageLoad(src_img, pixel_coords_0 + ivec2(3, 0));
+    value4_1 = imageLoad(src_img, pixel_coords_1 + ivec2(3, 0));
+    s_shared_minmax[6][local_idx] = min(value4_0, value4_1);
+    s_shared_minmax[7][local_idx] = max(value4_0, value4_1);
+    value4_0 = imageLoad(src_img, pixel_coords_0 + ivec2(4, 0));
+    value4_1 = imageLoad(src_img, pixel_coords_1 + ivec2(4, 0));
+    s_shared_minmax[8][local_idx] = min(value4_0, value4_1);
+    s_shared_minmax[9][local_idx] = max(value4_0, value4_1);
+    value4_0 = imageLoad(src_img, pixel_coords_0 + ivec2(5, 0));
+    value4_1 = imageLoad(src_img, pixel_coords_1 + ivec2(5, 0));
+    s_shared_minmax[10][local_idx] = min(value4_0, value4_1);
+    s_shared_minmax[11][local_idx] = max(value4_0, value4_1);
+    float value_0 = imageLoad(src_img, pixel_coords_0 + ivec2(6, 0)).x;
+    float value_1 = imageLoad(src_img, pixel_coords_1 + ivec2(6, 0)).x;
+    s_shared_minmax[12][local_idx].x = min(value_0, value_1);
+    s_shared_minmax[13][local_idx].x = max(value_0, value_1);
+    barrier();
+
+    // Reduce in shared memory
+    for (uint stride = 1; stride < g_block_size; stride *= 2) {
+        if (local_idx % (2 * stride) == 0 && local_idx + stride < g_block_size) {
+            for (uint i = 0; i < 6; ++i) {
+				s_shared_minmax[i*2][local_idx] =
+                    min(s_shared_minmax[i*2][local_idx], s_shared_minmax[i*2][local_idx + stride]);
+				s_shared_minmax[i*2+1][local_idx] =
+                    max(s_shared_minmax[i*2+1][local_idx], s_shared_minmax[i*2+1][local_idx + stride]);
+			}
+            s_shared_minmax[12][local_idx].x =
+                min(s_shared_minmax[12][local_idx].x, s_shared_minmax[12][local_idx + stride].x);
+            s_shared_minmax[13][local_idx].x =
+                max(s_shared_minmax[13][local_idx].x, s_shared_minmax[13][local_idx + stride].x);
+        }
+        barrier();
+    }
+
+    ivec2 dst_pixel_coords = ivec2(gl_WorkGroupID.xy * 4);
+    if (local_idx < 14) {
+        imageStore(
+            dst_img,
+            dst_pixel_coords + ivec2(local_idx % 4, local_idx / 4),
+            s_shared_minmax[local_idx][0]);
+    }
+}
