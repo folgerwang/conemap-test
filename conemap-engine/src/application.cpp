@@ -838,12 +838,12 @@ void RealWorldApplication::initDrawFrame() {
         const uint32_t pass_step = 8;
         for (uint32_t i_pass = 0; i_pass < num_passes; i_pass+= pass_step) {
             auto pass_end = std::min(i_pass + pass_step, num_passes);
-            std::cout <<
+/*            std::cout <<
                 "conemap generation pass: " <<
                 i_pass <<
                 ", " <<
                 pass_end <<
-                std::endl;
+                std::endl;*/
             const auto& cmd_buf =
                 device_->setupTransientCommandBuffer();
             conemap_gen_->update(
