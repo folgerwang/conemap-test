@@ -835,15 +835,17 @@ void RealWorldApplication::initDrawFrame() {
         auto num_passes =
             dispatch_block_count.x * dispatch_block_count.y;
 
-        const uint32_t pass_step = 8;
+        const uint32_t pass_step = 4;
         for (uint32_t i_pass = 0; i_pass < num_passes; i_pass+= pass_step) {
             auto pass_end = std::min(i_pass + pass_step, num_passes);
-/*            std::cout <<
+            std::cout <<
                 "conemap generation pass: " <<
                 i_pass <<
                 ", " <<
                 pass_end <<
-                std::endl;*/
+                " of " <<
+                num_passes <<
+                std::endl;
             const auto& cmd_buf =
                 device_->setupTransientCommandBuffer();
             conemap_gen_->update(
@@ -863,6 +865,7 @@ void RealWorldApplication::initDrawFrame() {
     }
 
     // prt shadow generation.
+    if (0)
     {
         auto prt_start_point_ =
             std::chrono::high_resolution_clock::now();

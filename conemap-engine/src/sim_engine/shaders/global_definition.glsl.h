@@ -208,8 +208,8 @@
 
 #define kConemapGenBlockCacheSizeX              128
 #define kConemapGenBlockCacheSizeY              128
-#define kConemapGenBlockSizeX                   (kConemapGenBlockCacheSizeX * 4)
-#define kConemapGenBlockSizeY                   (kConemapGenBlockCacheSizeY * 4)
+#define kConemapGenBlockSizeX                   (kConemapGenBlockCacheSizeX * 2)
+#define kConemapGenBlockSizeY                   (kConemapGenBlockCacheSizeY * 2)
 #define kConemapGenDispatchX                    32
 #define kConemapGenDispatchY                    32
 #define kConemapGenBlockRadius                  2

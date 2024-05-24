@@ -20,6 +20,15 @@ const ivec2 g_dispatch_size =
 const ivec2 g_cache_block_size =
     ivec2(kConemapGenBlockCacheSizeX, kConemapGenBlockCacheSizeY);
 
+const uint kConemapGenBlockCacheSize = kConemapGenBlockCacheSizeX * kConemapGenBlockCacheSizeY;
+
+shared float s_depth[kConemapGenBlockCacheSize];
+
+int getSamplePixelIndex(vec2 sample_pixel) {
+    ivec2 i_sample_pixel = ivec2(sample_pixel);
+    return i_sample_pixel.y * g_cache_block_size.x + i_sample_pixel.x;
+}
+
 layout(local_size_x = kConemapGenDispatchX, local_size_y = kConemapGenDispatchY) in;
 void main()
 {
@@ -28,6 +37,13 @@ void main()
     ivec2 local_group_idx = ivec2(gl_WorkGroupID);
     ivec2 global_group_offset = params.dst_block_offset + local_group_idx * g_dispatch_size;
     ivec2 center_cache_block_idx = global_group_offset / g_cache_block_size;
+    uint local_idx = gl_LocalInvocationIndex;
+
+    if (local_idx < kConemapGenBlockCacheSize) {
+		ivec2 cache_coords = ivec2(local_idx % g_cache_block_size.x, local_idx / g_cache_block_size.x);
+		ivec2 global_coords = params.block_offset + cache_coords;
+		s_depth[local_idx] = texture(src_img, (global_coords + 0.5f) * params.inv_size)[params.depth_channel];
+	}
 
     // get index in global work group i.e x,y position
     vec2 uv = (global_pixel_coords.xy + 0.5f) * params.inv_size;
@@ -92,34 +108,44 @@ void main()
             vec2 t = getIntersection(ray_org, inv_sample_ray, box_corner_min, box_corner_max);
             float t_range = t.y - t.x;
 
-            vec2 sample_ray_range = abs(t_range * sample_ray);
-            uint sample_count = uint(max(max(sample_ray_range.x, sample_ray_range.y), 3.0f));
+            if (t_range > 0) {
+                vec2 sample_ray_start = ray_org + t.x * sample_ray - params.block_offset;
+                vec2 sample_ray_end = ray_org + t.y * sample_ray - params.block_offset;
 
-            float t_step = t_range / float(sample_count);
-            vec2 sample_ray_step = sample_ray * t_step;
+                sample_ray_start = min(max(sample_ray_start, vec2(0.0f)), vec2(g_cache_block_size - 1));
+                sample_ray_end = min(max(sample_ray_end, vec2(0.0f)), vec2(g_cache_block_size - 1));
 
-            float c_t = t.x + 0.5f * t_step;
-            vec2 sample_ray_uv_step = sample_ray_step * params.inv_size;
-            vec2 sample_uv = (ray_org + c_t * sample_ray) * params.inv_size;
-            float s_d_prev = texture(src_img, sample_uv)[params.depth_channel];
-            sample_uv += sample_ray_uv_step;
-            float s_d = texture(src_img, sample_uv)[params.depth_channel];
-            for (uint ts = 0; ts < sample_count; ts++) {
-                c_t += t_step;
-                sample_uv += sample_ray_uv_step;
-                float s_d_next = texture(src_img, sample_uv)[params.depth_channel];
+                vec2 sample_ray_range = sample_ray_end - sample_ray_start;
+                uint sample_count =
+                    uint(max(max(abs(sample_ray_range.x), abs(sample_ray_range.y)), 1.0f));
 
-                float deta_height = s_d / c_t * t_step;
-                // found tangent point.
-                float inv_cone_ratio = (max(c_depth - s_d, 0.0f) * buffer_diagonal_length) / c_t;
-                if (s_d_prev >= s_d - deta_height && s_d_next >= s_d + deta_height) {
-                    best_inv_cone_ratio.x = max(best_inv_cone_ratio.x, inv_cone_ratio);
-                }
+                float t_step = t_range / float(sample_count);
+                vec2 sample_ray_step = sample_ray_range / float(sample_count);
 
-                best_inv_cone_ratio.y = max(best_inv_cone_ratio.y, inv_cone_ratio);
-	            s_d_prev = s_d;
-			    s_d = s_d_next;
-		    }
+                float c_t = t.x + 0.5f * t_step;
+                vec2 sample_pixel = sample_ray_start + 0.5f * sample_ray_step;
+                int idx_prev = getSamplePixelIndex(min(max(sample_pixel - sample_ray_step, vec2(0)), vec2(g_cache_block_size - 1)));
+                float s_d_prev = s_depth[idx_prev];
+                int idx = getSamplePixelIndex(min(max(sample_pixel, vec2(0)), vec2(g_cache_block_size - 1)));
+                float s_d = s_depth[idx];
+                for (uint ts = 0; ts < sample_count; ts++) {
+                    sample_pixel += sample_ray_step;
+                    int idx_next = getSamplePixelIndex(min(max(sample_pixel, vec2(0)), vec2(g_cache_block_size - 1)));
+                    float s_d_next = s_depth[idx_next];
+
+                    float deta_height = s_d / c_t * t_step;
+                    // found tangent point.
+                    float inv_cone_ratio = (max(c_depth - s_d, 0.0f) * buffer_diagonal_length) / c_t;
+                    if (s_d_prev >= s_d - deta_height && s_d_next >= s_d + deta_height) {
+                        best_inv_cone_ratio.x = max(best_inv_cone_ratio.x, inv_cone_ratio);
+                    }
+
+                    best_inv_cone_ratio.y = max(best_inv_cone_ratio.y, inv_cone_ratio);
+	                s_d_prev = s_d;
+			        s_d = s_d_next;
+                    c_t += t_step;
+		        }
+            }
 
             alpha += angle_step;
         }
