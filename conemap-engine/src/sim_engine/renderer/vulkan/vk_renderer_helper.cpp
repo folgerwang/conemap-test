@@ -1812,49 +1812,6 @@ SwapChainSupportDetails querySwapChainSupport(
     return details;
 }
 
-//--------------------------------------------------------------------------------------------------
-// Initialize Vulkan ray tracing
-// #VKRay
-void initRayTracing(const VkPhysicalDevice& device)
-{
-    VkPhysicalDeviceRayTracingPipelinePropertiesKHR
-        rt_properties{
-            VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_PROPERTIES_KHR };
-
-    // Requesting ray tracing properties
-    VkPhysicalDeviceProperties2 prop2{ VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2 };
-    prop2.pNext = &rt_properties;
-    vkGetPhysicalDeviceProperties2(device, &prop2);
-
-    VkPhysicalDeviceAccelerationStructureFeaturesKHR as_features{};
-    as_features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_FEATURES_KHR;
-    VkPhysicalDeviceFeatures2 device_features2{};
-    device_features2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
-    device_features2.pNext = &as_features;
-    vkGetPhysicalDeviceFeatures2(device, &device_features2);
-}
-
-//--------------------------------------------------------------------------------------------------
-// Initialize Vulkan mesh shader
-void initMeshShader(const VkPhysicalDevice& device)
-{
-    VkPhysicalDeviceMeshShaderPropertiesEXT
-        ms_properties{
-            VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MESH_SHADER_PROPERTIES_EXT };
-
-    // Requesting ray tracing properties
-    VkPhysicalDeviceProperties2 prop2{ VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2 };
-    prop2.pNext = &ms_properties;
-    vkGetPhysicalDeviceProperties2(device, &prop2);
-
-    VkPhysicalDeviceMeshShaderFeaturesEXT ms_features{};
-    ms_features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MESH_SHADER_FEATURES_EXT;
-    VkPhysicalDeviceFeatures2 device_features2{};
-    device_features2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
-    device_features2.pNext = &ms_features;
-    vkGetPhysicalDeviceFeatures2(device, &device_features2);
-}
-
 bool isDeviceSuitable(
     const std::shared_ptr<renderer::PhysicalDevice>& physical_device,
     const std::shared_ptr<renderer::Surface>& surface) {
@@ -1863,10 +1820,6 @@ bool isDeviceSuitable(
     const auto& vk_physical_device = RENDER_TYPE_CAST(PhysicalDevice, physical_device);
     assert(vk_physical_device);
     auto device = vk_physical_device->get();
-
-    initRayTracing(device);
-
-    initMeshShader(device);
 
     bool extensions_supported = checkDeviceExtensionSupport(physical_device);
 
@@ -1973,9 +1926,6 @@ std::shared_ptr<renderer::Device> createLogicalDevice(
     create_info.ppEnabledExtensionNames = device_extensions.data();
 
     VkPhysicalDeviceBufferDeviceAddressFeatures enabled_buffer_device_address_features{};
-    VkPhysicalDeviceRayTracingPipelineFeaturesKHR enabled_ray_tracing_pipeline_features{};
-    VkPhysicalDeviceAccelerationStructureFeaturesKHR enabled_acceleration_structure_features{};
-    VkPhysicalDeviceMeshShaderFeaturesEXT enabled_mesh_shader_features{};
     VkPhysicalDeviceMaintenance4Features enabled_maintenance4_features{};
     VkPhysicalDeviceFloat16Int8FeaturesKHR enabled_float16_int8_features{};
 
@@ -1983,22 +1933,9 @@ std::shared_ptr<renderer::Device> createLogicalDevice(
     enabled_buffer_device_address_features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES;
     enabled_buffer_device_address_features.bufferDeviceAddress = VK_TRUE;
 
-    enabled_ray_tracing_pipeline_features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_FEATURES_KHR;
-    enabled_ray_tracing_pipeline_features.rayTracingPipeline = VK_TRUE;
-    enabled_ray_tracing_pipeline_features.pNext = &enabled_buffer_device_address_features;
-
-    enabled_acceleration_structure_features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_FEATURES_KHR;
-    enabled_acceleration_structure_features.accelerationStructure = VK_TRUE;
-    enabled_acceleration_structure_features.pNext = &enabled_ray_tracing_pipeline_features;
-
-    enabled_mesh_shader_features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MESH_SHADER_FEATURES_EXT;
-    enabled_mesh_shader_features.meshShader = VK_TRUE;
-    enabled_mesh_shader_features.taskShader = VK_TRUE;
-    enabled_mesh_shader_features.pNext = &enabled_acceleration_structure_features;
-
     enabled_maintenance4_features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_4_FEATURES;
     enabled_maintenance4_features.maintenance4 = VK_TRUE;
-    enabled_maintenance4_features.pNext = &enabled_mesh_shader_features;
+    enabled_maintenance4_features.pNext = &enabled_buffer_device_address_features;
 
     enabled_float16_int8_features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FLOAT16_INT8_FEATURES_KHR;
     enabled_float16_int8_features.shaderFloat16 = VK_TRUE;
