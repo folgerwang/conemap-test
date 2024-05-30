@@ -54,11 +54,7 @@ void main()
         vec4 sample_ray_tangent = vec4(0);
         for (uint c = 0; c < 4; c++) {
             vec2 sample_ray = vec2(cos(phi), sin(phi));
-            vec2 ray_offset = (vec2(1.0f) - sign(abs(sample_ray))) * 1e-20;
-            vec2 adj_sample_ray = sample_ray + ray_offset;
-            vec2 inv_sample_ray = 1.0f / adj_sample_ray;
-
-            vec2 t = getIntersection(ray_org, inv_sample_ray, box_corner_min, box_corner_max);
+            vec2 t = getIntersection(ray_org, sample_ray, box_corner_min, box_corner_max);
             float t_range = t.y - t.x;
 
             // more than half pixel, do sampling.

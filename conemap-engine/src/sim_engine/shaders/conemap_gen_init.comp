@@ -47,17 +47,12 @@ void main()
     float phi = 0.5f * phi_step;
     // buffer's diagonal length.
     float buffer_diagonal_length = length(vec2(params.size));
-    float inv_buffer_diagonal_length = 1.0f / buffer_diagonal_length;
 
     // go through all sample rays.
     vec2 ray_org = global_pixel_coords.xy + 0.5f;
     for (uint r = 0; r < num_sample_rays; r++) {
         vec2 sample_ray = vec2(cos(phi), sin(phi));
-        vec2 ray_offset = (vec2(1.0f) - sign(abs(sample_ray))) * 1e-20;
-        vec2 adj_sample_ray = sample_ray + ray_offset;
-        vec2 inv_sample_ray = 1.0f / adj_sample_ray;
-
-        vec2 t = getIntersection(ray_org, inv_sample_ray, box_corner_min, box_corner_max);
+        vec2 t = getIntersection(ray_org, sample_ray, box_corner_min, box_corner_max);
         float t_range = t.y - t.x;
 
         // more than half pixel, do sampling.
@@ -82,7 +77,7 @@ void main()
 
                 float deta_height = s_d / c_t * t_step;
                 // found tangent point.
-                float inv_cone_ratio = max(c_depth - s_d, 0.0f) / (c_t * inv_buffer_diagonal_length);
+                float inv_cone_ratio = max(c_depth - s_d, 0.0f) * buffer_diagonal_length / c_t;
                 if (s_d_prev >= s_d - deta_height && s_d_next >= s_d + deta_height) {
                     best_inv_cone_ratio.x = max(best_inv_cone_ratio.x, inv_cone_ratio);
                 }

@@ -101,11 +101,7 @@ void main()
         vec2 ray_org = global_pixel_coords.xy + 0.5f;
         for (uint ta = 0; ta < num_sample_rays; ta++) {
             vec2 sample_ray = vec2(cos(alpha), sin(alpha));
-            vec2 ray_offset = (vec2(1.0f) - sign(abs(sample_ray))) * 1e-20;
-            vec2 adj_sample_ray = sample_ray + ray_offset;
-            vec2 inv_sample_ray = 1.0f / adj_sample_ray;
-
-            vec2 t = getIntersection(ray_org, inv_sample_ray, box_corner_min, box_corner_max);
+            vec2 t = getIntersection(ray_org, sample_ray, box_corner_min, box_corner_max);
             float t_range = t.y - t.x;
 
             if (t_range > 0) {
