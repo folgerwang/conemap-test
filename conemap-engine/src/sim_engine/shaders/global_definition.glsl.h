@@ -206,8 +206,8 @@
 #define kPayLoadHitValueIdx                     0
 #define kPayLoadShadowedIdx                     1
 
-#define kConemapGenBlockCacheSizeX              128
-#define kConemapGenBlockCacheSizeY              128
+#define kConemapGenBlockCacheSizeX              64
+#define kConemapGenBlockCacheSizeY              64
 #define kConemapGenBlockSizeX                   (kConemapGenBlockCacheSizeX * 2)
 #define kConemapGenBlockSizeY                   (kConemapGenBlockCacheSizeY * 2)
 #define kConemapGenDispatchX                    32
@@ -277,7 +277,7 @@ struct ModelParams {
 
 struct PrtLightParams {
     mat4 model_mat;
-    float coeffs[25];
+//    float coeffs[25];
     float height_scale;
     vec2 buffer_size;
     vec3 test_color;

@@ -836,7 +836,7 @@ void RealWorldApplication::initDrawFrame() {
             dispatch_block_count.x * dispatch_block_count.y;
 
         const uint32_t pass_step = 4;
-        for (uint32_t i_pass = 0; i_pass < num_passes; i_pass+= pass_step) {
+        for (uint32_t i_pass = 0; i_pass < num_passes; i_pass += pass_step) {
             auto pass_end = std::min(i_pass + pass_step, num_passes);
             std::cout <<
                 "conemap generation pass: " <<

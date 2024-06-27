@@ -187,6 +187,7 @@ void GameCamera::updateGameCameraBuffer(
         update_game_camera_pipeline_layout_,
         &game_camera_params,
         sizeof(game_camera_params));
+    assert(sizeof(game_camera_params) <= 128);
 
     cmd_buf->bindDescriptorSets(
         renderer::PipelineBindPoint::COMPUTE,

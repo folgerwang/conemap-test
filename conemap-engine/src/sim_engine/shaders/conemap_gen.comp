@@ -21,6 +21,7 @@ const ivec2 g_cache_block_size =
     ivec2(kConemapGenBlockCacheSizeX, kConemapGenBlockCacheSizeY);
 
 const uint kConemapGenBlockCacheSize = kConemapGenBlockCacheSizeX * kConemapGenBlockCacheSizeY;
+const uint kDispatchSize = kConemapGenDispatchX * kConemapGenDispatchY;
 
 shared float s_depth[kConemapGenBlockCacheSize];
 
@@ -39,11 +40,16 @@ void main()
     ivec2 center_cache_block_idx = global_group_offset / g_cache_block_size;
     uint local_idx = gl_LocalInvocationIndex;
 
-    if (local_idx < kConemapGenBlockCacheSize) {
-		ivec2 cache_coords = ivec2(local_idx % g_cache_block_size.x, local_idx / g_cache_block_size.x);
-		ivec2 global_coords = params.block_offset + cache_coords;
-		s_depth[local_idx] = texture(src_img, (global_coords + 0.5f) * params.inv_size)[params.depth_channel];
-	}
+    if (local_group_idx.x == 0 && local_group_idx.y == 0) {
+        while (local_idx < kConemapGenBlockCacheSize) {
+		    ivec2 cache_coords = ivec2(local_idx % g_cache_block_size.x, local_idx / g_cache_block_size.x);
+		    ivec2 global_coords = params.block_offset + cache_coords;
+		    s_depth[local_idx] = texture(src_img, (global_coords + 0.5f) * params.inv_size)[params.depth_channel];
+            local_idx += kDispatchSize;
+	    }
+    }
+
+    barrier();
 
     // get index in global work group i.e x,y position
     vec2 uv = (global_pixel_coords.xy + 0.5f) * params.inv_size;

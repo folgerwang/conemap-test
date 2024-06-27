@@ -439,9 +439,11 @@ void ConemapTest::draw(
             std::cos(s_theta),
             std::sin(s_theta) * std::sin(s_phi));
 
+#if 0
     for (int i = 0; i < 25; i++) {
         params.coeffs[i] = y_value[i];
     }
+#endif
 
     //s_theta += 0.001f;
     s_phi += 0.003f;

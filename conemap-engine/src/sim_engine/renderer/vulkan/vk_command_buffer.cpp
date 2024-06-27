@@ -212,6 +212,9 @@ void VulkanCommandBuffer::pushConstants(
     uint32_t size,
     uint32_t offset/* = 0*/) {
     auto vk_pipeline_layout = RENDER_TYPE_CAST(PipelineLayout, pipeline_layout);
+    if (size > 128) {
+        std::cerr << "push constant size is too large:" << size << std::endl;
+    }
     vkCmdPushConstants(
         cmd_buf_,
         vk_pipeline_layout->get(),

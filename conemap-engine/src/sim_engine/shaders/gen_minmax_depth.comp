@@ -9,7 +9,7 @@ layout(push_constant) uniform ConemapUniformBufferObject {
 layout(set = 0, binding = SRC_TEX_INDEX) uniform sampler2D src_img;
 layout(set = 0, binding = DST_TEX_INDEX, rg16f) uniform image2D dst_img;
 
-#define kConemapCacheBufferSize 4096
+#define kConemapCacheBufferSize 4000
 
 shared vec2 s_depth[kConemapCacheBufferSize];
 shared vec2 s_minmax_height;

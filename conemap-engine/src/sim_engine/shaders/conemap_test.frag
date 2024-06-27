@@ -160,6 +160,7 @@ void main() {
     uvec4 prt_packed_info =
         imageLoad(src_prt_pack_img, pixel_coords);
 
+#if 0
     vec4 pack_info_1[6], pack_info_2[6];
     pack_info_1[0] = imageLoad(src_prt_packed_info_img, pack_info_pixel_coords);
     pack_info_2[0] = imageLoad(src_prt_packed_info_img, pack_info_pixel_coords + ivec2(1, 0));
@@ -218,6 +219,9 @@ void main() {
     sum_visi += dot(coeffs[4], vec4(params.coeffs[16], params.coeffs[17], params.coeffs[18], params.coeffs[19]));
     sum_visi += dot(coeffs[5], vec4(params.coeffs[20], params.coeffs[21], params.coeffs[22], params.coeffs[23]));
     sum_visi += coeffs_6 * params.coeffs[24];
+#else
+    float sum_visi = 0;
+#endif
 
 	// Calculate lighting contribution from punctual light sources
 #ifdef USE_PUNCTUAL
@@ -241,6 +245,7 @@ void main() {
         material_info,
         normal_info,
         v);
+
 
     vec3 color =
         getFinalColor(

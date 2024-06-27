@@ -181,6 +181,7 @@ std::shared_ptr<er::PipelineLayout>
     push_const_range.stage_flags = SET_FLAG_BIT(ShaderStage, COMPUTE_BIT);
     push_const_range.offset = 0;
     push_const_range.size = sizeof(glsl::ConemapGenParams);
+    assert(push_const_range.size <= 128);
 
     return device->createPipelineLayout(
         { desc_set_layout },
