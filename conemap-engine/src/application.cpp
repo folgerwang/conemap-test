@@ -16,8 +16,8 @@ namespace er = engine::renderer;
 namespace ego = engine::game_object;
 
 namespace {
-constexpr int kWindowSizeX = 2560;
-constexpr int kWindowSizeY = 1440;
+constexpr int kWindowSizeX = 1920;
+constexpr int kWindowSizeY = 1080;
 static int s_update_frame_count = -1;
 static bool s_render_prt_test = true;
 
