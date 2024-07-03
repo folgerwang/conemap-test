@@ -40,15 +40,14 @@ void main()
     ivec2 center_cache_block_idx = global_group_offset / g_cache_block_size;
     uint local_idx = gl_LocalInvocationIndex;
 
-    if (local_group_idx.x == 0 && local_group_idx.y == 0) {
         while (local_idx < kConemapGenBlockCacheSize) {
-		    ivec2 cache_coords = ivec2(local_idx % g_cache_block_size.x, local_idx / g_cache_block_size.x);
-		    ivec2 global_coords = params.block_offset + cache_coords;
-		    s_depth[local_idx] = texture(src_img, (global_coords + 0.5f) * params.inv_size)[params.depth_channel];
+		    ivec2 cache_block_coords = ivec2(local_idx % g_cache_block_size.x, local_idx / g_cache_block_size.x);
+		    ivec2 cache_coords = params.block_offset + cache_block_coords;
+		    s_depth[local_idx] = texture(src_img, (cache_coords + 0.5f) * params.inv_size)[params.depth_channel];
             local_idx += kDispatchSize;
 	    }
-    }
 
+    memoryBarrierShared();
     barrier();
 
     // get index in global work group i.e x,y position
