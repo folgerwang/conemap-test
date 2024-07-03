@@ -42,39 +42,45 @@ void main()
 
     while (local_idx < kConemapGenBlockCacheSize) {
 		ivec2 cache_block_coords = ivec2(local_idx % g_cache_block_size.x, local_idx / g_cache_block_size.x);
-		ivec2 cache_coords = params.block_offset + cache_block_coords;
-		s_depth[local_idx] = texture(src_img, (cache_coords + 0.5f) * params.inv_size)[params.depth_channel];
+		ivec2 cache_coords = params.cache_block_offset + cache_block_coords;
+		s_depth[local_idx] = texture(src_img, (cache_coords + 0.5f) * params.inv_full_size)[params.depth_channel];
         local_idx += kDispatchSize;
 	}
 
+/*    if (local_pixel_coords.x < kConemapGenBlockCacheSizeX && local_pixel_coords.y < kConemapGenBlockCacheSizeY) {
+		ivec2 cache_coords = params.cache_block_offset + local_pixel_coords;
+        uint cache_idx = local_pixel_coords.y * g_cache_block_size.x + local_pixel_coords.x;
+		s_depth[cache_idx] = texture(src_img, (cache_coords + 0.5f) * params.inv_full_size)[params.depth_channel];
+	}*/
+
     memoryBarrierShared();
-    barrier();
+    groupMemoryBarrier();
 
     // get index in global work group i.e x,y position
-    vec2 uv = (global_pixel_coords.xy + 0.5f) * params.inv_size;
+    vec2 uv = (global_pixel_coords.xy + 0.5f) * params.inv_full_size;
     float c_depth = texture(src_img, uv)[params.depth_channel];
 
     bool skip_this_group = false;
     // if this dispatch group is within 3x3 cache blocks, means it has been processed, skip it.
-    if (params.block_index.x >= center_cache_block_idx.x - 1 &&
-        params.block_index.x <= center_cache_block_idx.x + 1 &&
-        params.block_index.y >= center_cache_block_idx.y - 1 &&
-        params.block_index.y <= center_cache_block_idx.y + 1) {
+    if (params.cache_block_index.x >= center_cache_block_idx.x - 1 &&
+        params.cache_block_index.x <= center_cache_block_idx.x + 1 &&
+        params.cache_block_index.y >= center_cache_block_idx.y - 1 &&
+        params.cache_block_index.y <= center_cache_block_idx.y + 1) {
         skip_this_group = true;
     }
 
-    ivec2 box_corner_min = params.block_offset;
+    ivec2 box_corner_min = params.cache_block_offset;
     ivec2 box_corner_max = box_corner_min + g_cache_block_size - 1;
-    box_corner_max = clamp(box_corner_max, ivec2(0), ivec2(params.size - 1));
+    box_corner_max = clamp(box_corner_max, ivec2(0), ivec2(params.full_size - 1));
 
     ivec2 close_dist_0 = max(global_group_offset - box_corner_max, ivec2(0));
     ivec2 close_dist_1 = max(box_corner_min - (global_group_offset + g_dispatch_size), ivec2(0));
     float closest_c_t = length(vec2(close_dist_0 + close_dist_1));
 
     float saved_conemap_info = intBitsToFloat(imageLoad(dst_img_0, local_pixel_coords).x);
-    vec2 minmax_depth = imageLoad(minmax_depth_img, params.block_index).xy;
+    vec2 minmax_depth = imageLoad(minmax_depth_img, params.cache_block_index).xy;
 
-    float buffer_diagonal_length = length(vec2(params.size));
+    float buffer_diagonal_length = length(vec2(params.full_size));
     float inv_cone_ratio = (max(c_depth - minmax_depth.x, 0.0f) * buffer_diagonal_length) / closest_c_t;
 
     // if the conservative cone ratio of cached block is smaller than the saved one, skip this group.
@@ -110,8 +116,8 @@ void main()
             float t_range = t.y - t.x;
 
             if (t_range > 0) {
-                vec2 sample_ray_start = ray_org + t.x * sample_ray - params.block_offset;
-                vec2 sample_ray_end = ray_org + t.y * sample_ray - params.block_offset;
+                vec2 sample_ray_start = ray_org + t.x * sample_ray - params.cache_block_offset;
+                vec2 sample_ray_end = ray_org + t.y * sample_ray - params.cache_block_offset;
 
                 sample_ray_start = min(max(sample_ray_start, vec2(0.0f)), vec2(g_cache_block_size - 1));
                 sample_ray_end = min(max(sample_ray_end, vec2(0.0f)), vec2(g_cache_block_size - 1));

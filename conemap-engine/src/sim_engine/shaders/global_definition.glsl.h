@@ -456,10 +456,10 @@ struct CloudParams {
 };
 
 struct ConemapGenParams {
-    uvec2           size;
-    vec2            inv_size;
-    ivec2           block_index;
-    ivec2           block_offset;
+    uvec2           full_size;
+    vec2            inv_full_size;
+    ivec2           cache_block_index;
+    ivec2           cache_block_offset;
     ivec2           dst_block_offset;
     uint            is_height_map;
     uint            depth_channel;

@@ -27,7 +27,7 @@ void main()
         params.dst_block_offset + pixel_coords;
 
     // load current depth value from source image
-    vec2 uv = (global_pixel_coords.xy + 0.5f) * params.inv_size;
+    vec2 uv = (global_pixel_coords.xy + 0.5f) * params.inv_full_size;
 
     float inv_half_pi = 1.0f / (PI * 0.5f);
     vec4 conemap_info = vec4(

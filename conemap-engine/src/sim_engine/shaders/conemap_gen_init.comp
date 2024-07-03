@@ -27,7 +27,7 @@ void main()
     ivec2 center_cache_block_idx = global_group_offset / g_cache_block_size;
 
     // load current depth value from source image
-    vec2 uv = (global_pixel_coords.xy + 0.5f) * params.inv_size;
+    vec2 uv = (global_pixel_coords.xy + 0.5f) * params.inv_full_size;
     float c_depth = texture(src_img, uv)[params.depth_channel];
 
     // basing on edge sample count, create sample rays, capped at 1024.
@@ -37,8 +37,8 @@ void main()
     // 3x3 cache block.
     ivec2 box_corner_min = (center_cache_block_idx - 1) * g_cache_block_size;
     ivec2 box_corner_max = box_corner_min + g_cache_block_size * 3 - 1;
-    box_corner_min = clamp(box_corner_min, ivec2(0), ivec2(params.size - 1));
-    box_corner_max = clamp(box_corner_max, ivec2(0), ivec2(params.size - 1));
+    box_corner_min = clamp(box_corner_min, ivec2(0), ivec2(params.full_size - 1));
+    box_corner_max = clamp(box_corner_max, ivec2(0), ivec2(params.full_size - 1));
 
     float phi_step = 2.0f * PI / float(num_sample_rays);
     vec4 best_inv_cone_ratio = vec4(0.0f);
@@ -46,7 +46,7 @@ void main()
     // phi start as half sample.
     float phi = 0.5f * phi_step;
     // buffer's diagonal length.
-    float buffer_diagonal_length = length(vec2(params.size));
+    float buffer_diagonal_length = length(vec2(params.full_size));
 
     // go through all sample rays.
     vec2 ray_org = global_pixel_coords.xy + 0.5f;
@@ -65,8 +65,8 @@ void main()
 
             float c_t = t.x - 0.5f * t_step;
 
-            vec2 sample_ray_uv_step = sample_ray_step * params.inv_size;
-            vec2 sample_uv = (ray_org + c_t * sample_ray) * params.inv_size;
+            vec2 sample_ray_uv_step = sample_ray_step * params.inv_full_size;
+            vec2 sample_uv = (ray_org + c_t * sample_ray) * params.inv_full_size;
             float s_d_prev = texture(src_img, sample_uv)[params.depth_channel];
             sample_uv += sample_ray_uv_step;
             float s_d = texture(src_img, sample_uv)[params.depth_channel];

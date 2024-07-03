@@ -46,7 +46,7 @@ void main()
             uint y = idx / kConemapGenBlockCacheSizeX;
             uint x = idx % kConemapGenBlockCacheSizeX;
             vec2 sample_uv =
-                (block_offset + uvec2(x, y)) * params.inv_size;
+                (block_offset + uvec2(x, y)) * params.inv_full_size;
 			s_depth[i] =
                 vec2(texture(src_img, sample_uv)[params.depth_channel]);
 		}

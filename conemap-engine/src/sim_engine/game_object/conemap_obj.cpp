@@ -372,8 +372,8 @@ void ConemapObj::update(
             gen_minmax_depth_pipeline_);
 
         glsl::ConemapGenParams params = {};
-        params.size = src_buffer_size;
-        params.inv_size = glm::vec2(1.0f / params.size.x, 1.0f / params.size.y);
+        params.full_size = src_buffer_size;
+        params.inv_full_size = glm::vec2(1.0f / params.full_size.x, 1.0f / params.full_size.y);
         params.depth_channel = getDepthChannel();
         params.is_height_map = isHeightMap() ? 1 : 0;
 
@@ -389,8 +389,8 @@ void ConemapObj::update(
             { gen_minmax_depth_tex_desc_set_ });
 
         cmd_buf->dispatch(
-            (params.size.x + kConemapGenBlockCacheSizeX - 1) / kConemapGenBlockCacheSizeX,
-            (params.size.y + kConemapGenBlockCacheSizeY - 1) / kConemapGenBlockCacheSizeY,
+            (params.full_size.x + kConemapGenBlockCacheSizeX - 1) / kConemapGenBlockCacheSizeX,
+            (params.full_size.y + kConemapGenBlockCacheSizeY - 1) / kConemapGenBlockCacheSizeY,
             1);
     }
 }

@@ -399,8 +399,8 @@ void Conemap::update(
                 { conemap_gen_init_tex_desc_set_ });
 
             glsl::ConemapGenParams params = {};
-            params.size = full_buffer_size;
-            params.inv_size = glm::vec2(1.0f / params.size.x, 1.0f / params.size.y);
+            params.full_size = full_buffer_size;
+            params.inv_full_size = glm::vec2(1.0f / params.full_size.x, 1.0f / params.full_size.y);
             params.dst_block_offset = cur_block_index * dispatch_block_size;
             params.depth_channel = conemap_obj->getDepthChannel();
             params.is_height_map = conemap_obj->isHeightMap() ? 1 : 0;
@@ -434,8 +434,8 @@ void Conemap::update(
                 { conemap_gen_tex_desc_set_ });
 
             glsl::ConemapGenParams params = {};
-            params.size = full_buffer_size;
-            params.inv_size = glm::vec2(1.0f / params.size.x, 1.0f / params.size.y);
+            params.full_size = full_buffer_size;
+            params.inv_full_size = glm::vec2(1.0f / params.full_size.x, 1.0f / params.full_size.y);
             params.depth_channel = conemap_obj->getDepthChannel();
             params.is_height_map = conemap_obj->isHeightMap() ? 1 : 0;
             params.dst_block_offset = cur_block_index * dispatch_block_size;
@@ -462,10 +462,10 @@ void Conemap::update(
                 int y = int((index & 0xffffffff) >> 16);
                 int x = int(index & 0xffff);
 
-                params.block_index =
+                params.cache_block_index =
                     glm::uvec2(x, y);
-                params.block_offset =
-                    params.block_index * glm::ivec2(g_cache_block_size);
+                params.cache_block_offset =
+                    params.cache_block_index * glm::ivec2(g_cache_block_size);
 
                 cmd_buf->pushConstants(
                     SET_FLAG_BIT(ShaderStage, COMPUTE_BIT),
@@ -496,8 +496,8 @@ void Conemap::update(
                 { conemap_pack_tex_desc_set_ });
 
             glsl::ConemapGenParams params = {};
-            params.size = full_buffer_size;
-            params.inv_size = glm::vec2(1.0f / params.size.x, 1.0f / params.size.y);
+            params.full_size = full_buffer_size;
+            params.inv_full_size = glm::vec2(1.0f / params.full_size.x, 1.0f / params.full_size.y);
             params.depth_channel = conemap_obj->getDepthChannel();
             params.is_height_map = conemap_obj->isHeightMap() ? 1 : 0;
             params.dst_block_offset = cur_block_index * dispatch_block_size;
